@@ -8,9 +8,10 @@ import (
 	"google.golang.org/api/option"
 )
 
-func GoogleNotification(data map[string]string) error {
+func GoogleNotification(data map[string]string,ServiceAccPath string,ChatSpaceName string) error {
 	fmt.Print("Entered GoogleNotification\n")
-	path := "D:/Golang Tutorial/tomcat_status/google_chat_check/service_account.json"
+	// path := "D:/Golang Tutorial/tomcat_status/google_chat_check/service_account.json"
+	path := ServiceAccPath
 	ctx := context.Background()
 	// client := getOauthClient(path)
 	// conf := &jwt.Config{
@@ -59,10 +60,11 @@ func GoogleNotification(data map[string]string) error {
 	}
 	fmt.Printf("Normal Service Created %v\n", service)
 	msgService := chat.NewSpacesMessagesService(service)
-	msg := ChatCard("Title", "Tomcat Running Status !!!", data)
+	msg := ChatCard("Title", "Tomcat Running Status !!!",data)
 	// msg := "hello"
 	fmt.Print("Now ChatCard Method called\n")
-	_, err = msgService.Create("spaces/AAAAwlgqHZg", msg).Do()
+	Spaces := fmt.Sprintf("spaces/%v",ChatSpaceName)
+	_, err = msgService.Create(Spaces, msg).Do()
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -102,9 +104,9 @@ func ChatCard(title string, Subtitle string, data map[string]string) *chat.Messa
 	return &message
 }
 
-func StartingPoint(data map[string]string) {
+func StartingPoint(data map[string]string,ServiceAccPath string,ChatSpaceName string) {
 	fmt.Print("Starting GoogleNotification method Called!!!\n")
-	GoogleNotification(map[string]string{"data": data["data"]})
+	GoogleNotification(map[string]string{"data": data["data"]},ServiceAccPath,ChatSpaceName)
 	// go func(){
 	// 	log.Fatal(http.ListenAndServeTLS("linuxmigration.corenttechnology.com:777","E:\\SurpaasSetup/\\keys\\corenttechnology.pkcs12","E:\\SurpaasSetup\\keys\\paasswd.txt",nil))
 	// }()
