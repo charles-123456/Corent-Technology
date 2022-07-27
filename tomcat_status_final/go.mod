@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/magiconair/properties v1.8.6
 	github.com/mozilla/mig v0.0.0-20190913234010-9e7e4f525805
-	golang.org/x/oauth2 v0.0.0-20220718184931-c8730f7fcb92
+	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e
 	google.golang.org/api v0.88.0
 )
 
@@ -18,6 +18,7 @@ require (
 	github.com/googleapis/gax-go/v2 v2.4.0 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	golang.org/x/net v0.0.0-20220624214902-1bab6f366d9e // indirect
+	golang.org/x/oauth2 v0.0.0-20220718184931-c8730f7fcb92 // indirect
 	golang.org/x/sys v0.0.0-20220624220833-87e55d714810 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
