@@ -14,11 +14,11 @@ var PropertyFile = []string{"./conf.properties"}
 var P, _ = properties.LoadFiles(PropertyFile, properties.UTF8, true)
 var TomcatName = P.MustGet("tomcat.name")
 var TomcatPort = P.MustGet("tomcat.port")
-var ServiceAccPath= P.MustGet("service.account.path")
+// var ServiceAccPath= P.MustGet("service.account.path")
 var ChatSpaceName= P.MustGet("chat.space.name")
 // var StoppedPort = []string{}
-var Time = time.Now()
-var Dt_fmt = Time.Format("01-02-2006 15:04:05")
+// var Time = time.Now()
+// var Dt_fmt = Time.Format("01-02-2006 15:04:05")
 var IsExistCheck = false
 var ExistConnId = false
 var ActivePort[]string
@@ -91,12 +91,12 @@ func CheckPort(port string,mapVal int,Name string,IsFirst bool){
 	if !AlwaysAlertCon(ActivePort,DeadPort,port) || IsFirst {
 		for id,IsVal := range globalMap{
 			if id == port  && IsVal == 1{
-				data := fmt.Sprintf("%v = %v is listening Now and Time - %v !!!\r\n",Name,port,Dt_fmt)
-				google_chat_check.StartingPoint(map[string]string{"data": data},ServiceAccPath,ChatSpaceName)
+				data := fmt.Sprintf("%v is started\r\t\n",Name)
+				google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName)
 			}
 			if id == port  && IsVal == 0{
-				data := fmt.Sprintf("%v = %v is Stopped Now and Time - %v !!!\r\n",Name,port,Dt_fmt)
-				google_chat_check.StartingPoint(map[string]string{"data": data},ServiceAccPath,ChatSpaceName)
+				data := fmt.Sprintf("%v is Stopped\r\t\n",Name)
+				google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName)
 			}
 		}
 	}
