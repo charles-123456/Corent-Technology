@@ -13,7 +13,7 @@ func GoogleNotification(data map[string]string,ChatSpaceName string) error {
 	fmt.Print("Entered GoogleNotification\n")
 	// path := "D:/Golang Tutorial/tomcat_status/google_chat_check/service_account.json"
 	dir,_:= os.Getwd()
-	path := dir+"\\google_chat_check\\service_account.json"
+	path := dir+"\\service_account.json"
 	ctx := context.Background()
 	// client := getOauthClient(path)
 	// conf := &jwt.Config{

@@ -8,9 +8,8 @@ import (
 	"github.com/mozilla/mig/modules/netstat"
 	"corent-go/google_chat_check"
 	"golang.org/x/exp/slices"
-	"log"
-	"github.com/kardianos/service"
 )
+	
 
 var PropertyFile = []string{"./conf.properties"}
 var P, _ = properties.LoadFiles(PropertyFile, properties.UTF8, true)
@@ -24,17 +23,9 @@ var ChatSpaceName= P.MustGet("chat.space.name")
 var ActivePort[]string
 var DeadPort[]string
 // var isAllow = false
-var logger service.Logger
 
-type program struct{}
 
-func (p *program) Start(s service.Service) error {
-	// Start should not block. Do the actual work async.
-	go p.run()
-	return nil
-}
-func (p *program) run() {
-	//Do work here
+func main() {
 	for range time.Tick(time.Second * 10){
 		TomcatPort := strings.Split(TomcatPort,",")
 		TomcatName := strings.Split(TomcatName,",")
@@ -42,34 +33,6 @@ func (p *program) run() {
 			NeverStop(port,TomcatName[i])
 		}		
 			}
-}
-func (p *program) Stop(s service.Service) error {
-	// Stop should not block. Return with a few seconds.
-	return nil
-}
-
-
-func main() {
-	svcConfig := &service.Config{
-		Name:        "DemoGOlang",
-		DisplayName: "Go Service Example",
-		Description: "This is an example Go service.",
-	}
-
-	prg := &program{}
-	s, err := service.New(prg, svcConfig)
-	if err != nil {
-		log.Fatal(err)
-	}
-	logger, err = s.Logger(nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = s.Run()
-	if err != nil {
-		logger.Error(err)
-	}
-		
 
 }
 
