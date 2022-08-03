@@ -13,7 +13,7 @@ func GoogleNotification(data map[string]string,ChatSpaceName string) error {
 	fmt.Print("Entered GoogleNotification\n")
 	// path := "D:/Golang Tutorial/tomcat_status/google_chat_check/service_account.json"
 	dir,_:= os.Getwd()
-	path := dir+"\\service_account.json"
+	path := dir+"\\google_chat_check\\service_account.json"
 	ctx := context.Background()
 	// client := getOauthClient(path)
 	// conf := &jwt.Config{
@@ -104,7 +104,7 @@ func ChatCard(data map[string]string) *chat.Message {
 
 func StartingPoint(data map[string]string,ChatSpaceName string) {
 	fmt.Print("Starting GoogleNotification method Called!!!\n")
-	GoogleNotification(map[string]string{"Alert": data["data"]},ChatSpaceName)
+	GoogleNotification(map[string]string{"Charlie Says": data["data"]},ChatSpaceName)
 	// go func(){
 	// 	log.Fatal(http.ListenAndServeTLS("linuxmigration.corenttechnology.com:777","E:\\SurpaasSetup/\\keys\\corenttechnology.pkcs12","E:\\SurpaasSetup\\keys\\paasswd.txt",nil))
 	// }()

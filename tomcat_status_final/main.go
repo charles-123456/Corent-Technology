@@ -8,6 +8,7 @@ import (
 	"github.com/mozilla/mig/modules/netstat"
 	"corent-go/google_chat_check"
 	"golang.org/x/exp/slices"
+	"sync"
 )
 	
 
@@ -23,26 +24,44 @@ var ChatSpaceName= P.MustGet("chat.space.name")
 var ActivePort[]string
 var DeadPort[]string
 // var isAllow = false
-
+var wg sync.WaitGroup
+var isFirst = true
 
 func main() {
+	value :="Hi Team 👋👋👋\nThis is Charlie😎,\n I'm hired by SaaSDev team🏣\nTo monitor Supaas Server Status🧐👁️‍🗨️."
+	data := fmt.Sprintf("%v",value)
+	google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName)
 	for range time.Tick(time.Second * 10){
 		TomcatPort := strings.Split(TomcatPort,",")
 		TomcatName := strings.Split(TomcatName,",")
 		for i,port := range TomcatPort {
-			NeverStop(port,TomcatName[i])
-		}		
+			go NeverStop(port,TomcatName[i])
+			wg.Add(1)
+		}
+		isFirst =false
+		wg.Wait()	
 			}
 
 }
 
+func StartOrRunningUpdate(isFirst bool)string{
+	if isFirst{
+		val := "Running"
+		return val
+	}else{
+		val := "Started"
+		return val
+	}
+}
 
 func NeverStop(port string,Name string) {
+	defer wg.Done()
 	conn,_, _ := netstat.HasListeningPort(port)
+	pharse := StartOrRunningUpdate(isFirst)
 	if conn{
 		IsActivePort := slices.Contains(ActivePort,port)
 		if !IsActivePort{
-			data := fmt.Sprintf("%v is Started",Name)
+			data := fmt.Sprintf("%v is %v",Name,pharse)
 			google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName)
 			ActivePort = append(ActivePort,port)
 		}
