@@ -2,13 +2,16 @@ package main
 
 import (
 	"fmt"
-	"time"
 	"strings"
 	"github.com/magiconair/properties"
 	"github.com/mozilla/mig/modules/netstat"
 	"corent-go/google_chat_check"
 	"golang.org/x/exp/slices"
 	"sync"
+	"github.com/kardianos/service"
+	"flag"
+	"os"
+	"time"
 )
 	
 
@@ -27,21 +30,79 @@ var DeadPort[]string
 var wg sync.WaitGroup
 var isFirst = true
 
-func main() {
+var logger service.Logger
+
+type program struct{}
+
+func (p *program) Start(s service.Service) error {
+	// Start should not block. Do the actual work async.
+	go p.run()
+	return nil
+}
+func (p *program) run() {
+	// Do work here
 	value :="Hi Team 👋👋👋\nThis is Charlie😎,\n I'm hired by SaaSDev team🏣\nTo monitor Supaas Server Status🧐👁️‍🗨️."
 	data := fmt.Sprintf("%v",value)
 	google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName)
-	for range time.Tick(time.Second * 10){
+	for range time.Tick(time.Second * 10)  {
 		TomcatPort := strings.Split(TomcatPort,",")
 		TomcatName := strings.Split(TomcatName,",")
 		for i,port := range TomcatPort {
-			go NeverStop(port,TomcatName[i])
-			wg.Add(1)
+			NeverStop(port,TomcatName[i])
 		}
 		isFirst =false
-		wg.Wait()	
 			}
 
+}
+func (p *program) Stop(s service.Service) error {
+	// Stop should not block. Return with a few seconds.
+	return nil
+}
+
+func main() {
+	svcFlag := flag.String("service", "", "Control the system service.")
+	flag.Parse()
+	svcConfig := &service.Config{
+		Name:"Charlie1",
+		DisplayName: "Charlie1",
+		Description: "Charlie1",
+	}
+
+	prg := &program{}
+	s, err := service.New(prg, svcConfig)
+	if err != nil {
+		panic(err)
+	}
+	errs := make(chan error, 5)
+	logger, err = s.Logger(errs)
+	if err != nil {
+		_, _ = fmt.Fprintln(os.Stderr, err)
+	}
+	go func() {
+		for {
+			err := <-errs
+			if err != nil {
+				_, _ = fmt.Fprintln(os.Stderr, err)
+			}
+		}
+	}()
+
+	if len(*svcFlag) != 0 {
+		err := service.Control(s, *svcFlag)
+		if err != nil {
+			fmt.Println(err)
+			if strings.Contains(err.Error(), "Unknown action") {
+				_, _ = fmt.Fprintf(os.Stderr, "Valid actions: %q\n", service.ControlAction)
+			}
+			os.Exit(1)
+		}
+		return
+	}
+	err = s.Run()
+	if err != nil {
+		_ = logger.Error(err)
+	}
+	
 }
 
 func StartOrRunningUpdate(isFirst bool)string{
@@ -55,7 +116,7 @@ func StartOrRunningUpdate(isFirst bool)string{
 }
 
 func NeverStop(port string,Name string) {
-	defer wg.Done()
+	// defer wg.Done()
 	conn,_, _ := netstat.HasListeningPort(port)
 	pharse := StartOrRunningUpdate(isFirst)
 	if conn{
