@@ -15,12 +15,7 @@ import (
 )
 	
 
-var PropertyFile = []string{"./conf.properties"}
-var P, _ = properties.LoadFiles(PropertyFile, properties.UTF8, true)
-var TomcatName = P.MustGet("tomcat.name")
-var TomcatPort = P.MustGet("tomcat.port")
-// var ServiceAccPath= P.MustGet("service.account.path")
-var ChatSpaceName= P.MustGet("chat.space.name")
+var TomcatName,TomcatPort,ChatSpaceName string
 // var StoppedPort = []string{}
 // var Time = time.Now()
 // var Dt_fmt = Time.Format("01-02-2006 15:04:05")
@@ -30,18 +25,54 @@ var DeadPort[]string
 var wg sync.WaitGroup
 var isFirst = true
 
+func readprops(){
+	var PropertyFile = []string{"./conf.properties"}
+	var P, _ = properties.LoadFiles(PropertyFile, properties.UTF8, true)
+	 TomcatName = P.MustGet("tomcat.name")
+	 TomcatPort = P.MustGet("tomcat.port")
+	// var ServiceAccPath= P.MustGet("service.account.path")
+	 ChatSpaceName= P.MustGet("chat.space.name")
+}
+
+
 var logger service.Logger
 
-type program struct{}
+type program struct {
+	exit chan struct{}
+}
 
 func (p *program) Start(s service.Service) error {
+
+	if service.Interactive() {
+		_ = logger.Info("Running in terminal.")
+	} else {
+		_ = logger.Info("Running under service manager.")
+	}
+	p.exit = make(chan struct{})
+
 	// Start should not block. Do the actual work async.
 	go p.run()
 	return nil
 }
+
+// func (p *program) run() {
+// 	// Do work here
+// 	value :="Hi Team ??????\nThis is Charlie??,\n I'm hired by SaaSDev team??\nTo monitor Supaas Server Status?????????."
+// 	data := fmt.Sprintf("%v",value)
+// 	google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName)
+// 	for range time.Tick(time.Second * 10)  {
+// 		TomcatPort := strings.Split(TomcatPort,",")
+// 		TomcatName := strings.Split(TomcatName,",")
+// 		for i,port := range TomcatPort {
+// 			NeverStop(port,TomcatName[i])
+// 		}
+// 		isFirst =false
+// 			}
+
+// }
 func (p *program) run() {
-	// Do work here
-	value :="Hi Team 👋👋👋\nThis is Charlie😎,\n I'm hired by SaaSDev team🏣\nTo monitor Supaas Server Status🧐👁️‍🗨️."
+	readprops()
+	value :="Hi Team ??????\nThis is Charlie??,\n I'm hired by SaaSDev team??\nTo monitor Supaas Server Status?????????."
 	data := fmt.Sprintf("%v",value)
 	google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName)
 	for range time.Tick(time.Second * 10)  {
@@ -52,8 +83,23 @@ func (p *program) run() {
 		}
 		isFirst =false
 			}
-
 }
+
+// func hi(writer http.ResponseWriter, request *http.Request) {
+// 	readprops()
+// 	value :="Hi Team ??????\nThis is Charlie??,\n I'm hired by SaaSDev team??\nTo monitor Supaas Server Status?????????."
+// 	data := fmt.Sprintf("%v",value)
+// 	google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName)
+// 	for range time.Tick(time.Second * 10)  {
+// 		TomcatPort := strings.Split(TomcatPort,",")
+// 		TomcatName := strings.Split(TomcatName,",")
+// 		for i,port := range TomcatPort {
+// 			NeverStop(port,TomcatName[i])
+// 		}
+// 		isFirst =false
+// 			}
+// 	fmt.Fprintf(writer, "corent-service test")
+// }
 func (p *program) Stop(s service.Service) error {
 	// Stop should not block. Return with a few seconds.
 	return nil
@@ -63,9 +109,9 @@ func main() {
 	svcFlag := flag.String("service", "", "Control the system service.")
 	flag.Parse()
 	svcConfig := &service.Config{
-		Name:"Charlie1",
-		DisplayName: "Charlie1",
-		Description: "Charlie1",
+		Name:"Charlie2",
+		DisplayName: "Charlie2",
+		Description: "Charlie2",
 	}
 
 	prg := &program{}
