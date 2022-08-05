@@ -153,7 +153,7 @@ func main() {
 
 func StartOrRunningUpdate(isFirst bool)string{
 	if isFirst{
-		val := "Running"
+		val := "Runningg"
 		return val
 	}else{
 		val := "Started"
