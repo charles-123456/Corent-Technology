@@ -8,12 +8,11 @@ import (
 	"golang.org/x/exp/slices"
 	"sync"
 	"github.com/kardianos/service"
-	"flag"
 	"os"
-	"time"
-	"log"
+	"corent-go/corent/log"
+	"flag"
 )
-	
+
 // "github.com/magiconair/properties"
 var TomcatName,TomcatPort,ChatSpaceName string
 
@@ -42,33 +41,22 @@ func readprops(){
 
 var logger service.Logger
 
-type program struct {
-	exit chan struct{}
-}
+type program struct{}
 
 func (p *program) Start(s service.Service) error {
-	InfoLog("Entered Start service method")
-	if service.Interactive() {
-		_ = logger.Info("Running in terminal.")
-	} else {
-		_ = logger.Info("Running under service manager.")
-	}
-	p.exit = make(chan struct{})
-
 	// Start should not block. Do the actual work async.
-	InfoLog("Now Calling run method")
 	go p.run()
 	return nil
 }
-
 func (p *program) run() {
+	// Do work here
 	readprops()
-	InfoLog("Entered run method")
+	log.Info("Entered Running function")
 	value :="Hi Team 👋👋👋\nThis is Charlie😎,\n I'm hired by SaaSDev team🏣\nTo monitor Supaas Server Status🧐👁️‍🗨️."
 	data := fmt.Sprintf("%v",value)
 	google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName)
-	for range time.Tick(time.Second * 10)  {
-		InfoLog("Entered Infinite time for loop!!!")
+	for {
+		log.Info("Entered Infinite time for loop!!!")
 		TomcatPort := strings.Split(TomcatPort,",")
 		TomcatName := strings.Split(TomcatName,",")
 		for i,port := range TomcatPort {
@@ -78,41 +66,36 @@ func (p *program) run() {
 		isFirst =false
 		wg.Wait()	
 			}
-	InfoLog("Finshed run method")
-
 }
-
 func (p *program) Stop(s service.Service) error {
 	// Stop should not block. Return with a few seconds.
-	InfoLog("Now Calling stop method")
 	return nil
 }
+// func openLogFile(path string)(*os.File,error){
+// 	 LogFile,err := os.OpenFile(path,os.O_WRONLY | os.O_APPEND | os.O_CREATE,0644)
+// 	 if err != nil {
+//         return nil, err
+//     }
+// 	return LogFile, nil
+// }
 
-func openLogFile(path string)(*os.File,error){
-	 LogFile,err := os.OpenFile(path,os.O_WRONLY | os.O_APPEND | os.O_CREATE,0644)
-	 if err != nil {
-        return nil, err
-    }
-	return LogFile, nil
-}
+// func InfoLog(msg string){
+// 	fileInfo, err := openLogFile("./Log.log")
+// 	if err != nil {
+//         log.Fatal(err)
+//     }
+// 	infoLog := log.New(fileInfo, "[info]", log.LstdFlags|log.Lshortfile|log.Lmicroseconds)
+//     infoLog.Printf("%v",msg)
+// }
 
-func InfoLog(msg string){
-	fileInfo, err := openLogFile("./Log.log")
-	if err != nil {
-        log.Fatal(err)
-    }
-	infoLog := log.New(fileInfo, "[info]", log.LstdFlags|log.Lshortfile|log.Lmicroseconds)
-    infoLog.Printf("%v",msg)
-}
-
-func errorLog(msg error){
-	fileError,err := openLogFile("./Log.log")
-	if err != nil {
-        log.Fatal(err)
-    }
-	errorLog := log.New(fileError, "[error]", log.LstdFlags|log.Lshortfile|log.Lmicroseconds)
-	errorLog.Printf("%v",msg)
-}
+// func errorLog(msg error){
+// 	fileError,err := openLogFile("./Log.log")
+// 	if err != nil {
+//         log.Fatal(err)
+//     }
+// 	errorLog := log.New(fileError, "[error]", log.LstdFlags|log.Lshortfile|log.Lmicroseconds)
+// 	errorLog.Printf("%v",msg)
+// }
 
 func main() {
 	svcFlag := flag.String("service", "", "Control the system service.")
@@ -122,17 +105,17 @@ func main() {
 		DisplayName: "Charlie2",
 		Description: "Charlie2",
 	}
-	InfoLog("New svcConfigline executed.")
+	log.Info("New svcConfigline executed.")
 	prg := &program{}
 	s, err := service.New(prg, svcConfig)
 	if err != nil {
-		errorLog(err)
+		log.Error(err)
 	}
-	InfoLog("New Service creating line excuted")
+	log.Info("New Service creating line excuted")
 	errs := make(chan error, 5)
 	logger, err = s.Logger(errs)
 	if err != nil {
-		errorLog(err)
+		log.Error(err)
 	}
 	go func() {
 		for {
@@ -145,8 +128,8 @@ func main() {
 
 	if len(*svcFlag) != 0 {
 		err := service.Control(s, *svcFlag)
-		if err != nil {
-			errorLog(err)
+	if err != nil {
+			log.Error(err)
 			if strings.Contains(err.Error(), "Unknown action") {
 				_, _ = fmt.Fprintf(os.Stderr, "Valid actions: %q\n", service.ControlAction)
 			}
@@ -156,9 +139,9 @@ func main() {
 	}
 	err = s.Run()
 	if err != nil {
-		errorLog(err)
+		log.Error(err)
 	}
-	InfoLog("New Run Called Kardinos excuted")
+	log.Info("New Run Called Kardinos excuted")
 }
 
 func StartOrRunningUpdate(isFirst bool)string{
@@ -173,7 +156,7 @@ func StartOrRunningUpdate(isFirst bool)string{
 
 func NeverStop(port string,Name string) {
 	defer wg.Done()
-	InfoLog("NeverStop Method Called!!!")
+	log.Info("NeverStop Method Called!!!")
 	conn,_, _ := netstat.HasListeningPort(port)
 	pharse := StartOrRunningUpdate(isFirst)
 	if conn{
@@ -181,6 +164,7 @@ func NeverStop(port string,Name string) {
 		if !IsActivePort{
 			data := fmt.Sprintf("%v is %v",Name,pharse)
 			google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName)
+			log.Info("google chat method called!!!")
 			ActivePort = append(ActivePort,port)
 		}
 		RemoveDeadPort()
@@ -189,6 +173,7 @@ func NeverStop(port string,Name string) {
 		if !IsDeadPort{
 			data := fmt.Sprintf("%v is stopped",Name)
 			google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName)
+			log.Info("google chat method called!!!")
 			DeadPort = append(DeadPort,port)
 		}
 		RemoveActivePort()

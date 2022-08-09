@@ -7,7 +7,7 @@ import (
 
 func main(){
 	
-cmd := exec.Command("corent-go.exe","Charlie")
+cmd := exec.Command("corent-go.exe")
 if err := cmd.Start(); err != nil{
     log.Fatal(err)
 }

@@ -187,3 +187,4 @@ cython_debug/
 go.work
 
 deploy/service_account.json
+*.zip

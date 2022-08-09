@@ -4,16 +4,17 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
 	"google.golang.org/api/chat/v1"
 	"google.golang.org/api/option"
+	"corent-go/corent/log"
 )
 
 func GoogleNotification(data map[string]string,ChatSpaceName string) error {
-	fmt.Print("Entered GoogleNotification\n")
+	log.Info("Entered GoogleNotification\n")
 	// path := "D:/Golang Tutorial/tomcat_status/google_chat_check/service_account.json"
-	dir,_:= os.Getwd()
-	path := dir+"\\service_account.json"
+	// dir,_:= os.Getwd()
+	// path := dir+"\\service_account.json"
+	path := "E:\\charles\\GO_TomcatService\\service_account.json"
 	ctx := context.Background()
 	// client := getOauthClient(path)
 	// conf := &jwt.Config{
@@ -58,19 +59,19 @@ func GoogleNotification(data map[string]string,ChatSpaceName string) error {
 	service, err := chat.NewService(ctx, option.WithCredentialsFile(path), option.WithScopes("https://www.googleapis.com/auth/chat.messages.create", "https://www.googleapis.com/auth/chat.spaces.create", "https://www.googleapis.com/auth/chat.memberships", "https://www.googleapis.com/auth/chat.memberships.app"))
 	// service, err := chat.NewService(client)
 	if err != nil {
-		return err
+		log.Error(err)
 	}
-	fmt.Printf("Normal Service Created %v\n", service)
+	log.Info("Normal Service Created \n")
 	msgService := chat.NewSpacesMessagesService(service)
 	msg := ChatCard(data)
 	// msg := "hello"
-	fmt.Print("Now ChatCard Method called\n")
+	log.Info("Now ChatCard Method called\n")
 	Spaces := fmt.Sprintf("spaces/%v",ChatSpaceName)
 	_, err = msgService.Create(Spaces, msg).Do()
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 	}
-	fmt.Printf("Message Service Created!!! %v\n", err)
+	log.Info("Message Service Created!!! %v\n", err)
 	return nil
 }
 
@@ -93,17 +94,17 @@ func ChatCard(data map[string]string) *chat.Message {
        ]
    }`
 	// outputString := fmt.Sprintf(cards)
-	fmt.Printf("Output string created %v\n", cards)
+	// fmt.Printf("Output string created %v\n", cards)
 	var message chat.Message
 	json.Unmarshal([]byte(cards), &message)
 
 	message.Cards[0].Sections[0].Widgets = widgets
-	fmt.Printf("Chat msg values widgets %v %v", widgets, &message)
+	// fmt.Printf("Chat msg values widgets %v %v", widgets, &message)
 	return &message
 }
 
 func StartingPoint(data map[string]string,ChatSpaceName string) {
-	fmt.Print("Starting GoogleNotification method Called!!!\n")
+	log.Info("Starting GoogleNotification method Called!!!\n")
 	GoogleNotification(map[string]string{"Charlie Says": data["data"]},ChatSpaceName)
 	// go func(){
 	// 	log.Fatal(http.ListenAndServeTLS("linuxmigration.corenttechnology.com:777","E:\\SurpaasSetup/\\keys\\corenttechnology.pkcs12","E:\\SurpaasSetup\\keys\\paasswd.txt",nil))
