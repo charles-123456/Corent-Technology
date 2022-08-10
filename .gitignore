@@ -188,3 +188,4 @@ go.work
 
 deploy/service_account.json
 *.zip
+tomcat_status_final/corent-go.exe
