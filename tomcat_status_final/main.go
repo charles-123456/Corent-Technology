@@ -11,60 +11,68 @@ import (
 	"os"
 	"corent-go/corent/log"
 	"flag"
+	"github.com/magiconair/properties"
+	"net/http"
+	"path/filepath"
 )
 
 // "github.com/magiconair/properties"
-var TomcatName,TomcatPort,ChatSpaceName string
-
-// var StoppedPort = []string{}
-// var Time = time.Now()
-// var Dt_fmt = Time.Format("01-02-2006 15:04:05")
-var ActivePort[]string
-var DeadPort[]string
-// var isAllow = false
-var wg sync.WaitGroup
-var isFirst = true
-
-func readprops(){
-	TomcatName = "Analyzer Tomcat1,Ceapi Tomcat2,MarketPlace Tomcat3,Surpaas Tomcat4"
-	TomcatPort ="8080,9444,1455,9433"
-	ChatSpaceName="AAAAwlgqHZg"
-	// var PropertyFile = []string{"./conf.properties"}
-	// var P, _ = properties.LoadFiles(PropertyFile, properties.UTF8, true)
-	//  TomcatName = P.MustGet("tomcat.name")
-	//  TomcatPort = P.MustGet("tomcat.port")
-	// var ServiceAccPath= P.MustGet("service.account.path")
-	//  ChatSpaceName= P.MustGet("chat.space.name")
-	
-}
-
-
-var logger service.Logger
+var TomcatName,TomcatPort,ChatSpaceName,ServiceAccPath string
 
 type program struct{}
+
+var(
+	CurrentPath,_ = os.Getwd()
+	ConfPath = CurrentPath+"\\conf.properties"
+	ActivePort[]string
+	DeadPort[]string
+	wg sync.WaitGroup
+	isFirst = true
+	logger service.Logger
+	PropertyFile[]string
+)
 
 func (p *program) Start(s service.Service) error {
 	// Start should not block. Do the actual work async.
 	go p.run()
 	return nil
 }
+func readprops(){
+	// TomcatName = "Analyzer Tomcat1,Ceapi Tomcat2,MarketPlace Tomcat3,Surpaas Tomcat4"
+	// TomcatPort ="8080,9444,1455,9433"
+	// ChatSpaceName="AAAAwlgqHZg"
+	P, err := properties.LoadFiles(PropertyFile, properties.UTF8, true)
+	if err != nil{
+		log.Error(err)
+	}
+	TomcatName = P.MustGet("tomcat.name")
+	// log.Info("TomcatName"+TomcatName)
+	TomcatPort = P.MustGet("tomcat.port")
+	// log.Info("TomcatPort"+TomcatPort)
+	ServiceAccPath = P.MustGet("service.account.path")
+	// log.Info("ServiceAccount"+ServiceAccPath)
+	ChatSpaceName = P.MustGet("chat.space.name")
+	// log.Info("Space"+ChatSpaceName)
+	
+}
+
 func (p *program) run() {
 	// Do work here
 	readprops()
-	log.Info("Entered Running function")
 	value :="Hi Team 👋👋👋\nThis is Charlie😎,\n I'm hired by SaaSDev team🏣\nTo monitor Supaas Server Status🧐👁️‍🗨️."
 	data := fmt.Sprintf("%v",value)
-	google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName)
+	google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName,ServiceAccPath)
 	for {
-		log.Info("Entered Infinite time for loop!!!")
+		// log.Info("Entered Infinite time for loop!!!")
 		TomcatPort := strings.Split(TomcatPort,",")
 		TomcatName := strings.Split(TomcatName,",")
 		for i,port := range TomcatPort {
 			go NeverStop(port,TomcatName[i])
 			wg.Add(1)
 		}
+		go http.ListenAndServe(":8090", nil)
 		isFirst =false
-		wg.Wait()	
+		wg.Wait()
 			}
 }
 func (p *program) Stop(s service.Service) error {
@@ -96,14 +104,33 @@ func (p *program) Stop(s service.Service) error {
 // 	errorLog := log.New(fileError, "[error]", log.LstdFlags|log.Lshortfile|log.Lmicroseconds)
 // 	errorLog.Printf("%v",msg)
 // }
+func getHomePath() string {
+	binPath, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	log.Info("BinPath"+binPath)
+	if err != nil {
+		panic(err)
+	 }
+	path, _ := filepath.Split(filepath.ToSlash(binPath))
+	path = path[:len(path)-1]
+	path = filepath.ToSlash(path)
+	log.Info("Path"+path)
+	return binPath
+	}
+	
+	
 
 func main() {
+	// path := getHomePath()
+	ConfPath := getHomePath()+"\\conf.properties"
+	log.Info("COnf"+ConfPath)
+	PropertyFile = []string{ConfPath}
 	svcFlag := flag.String("service", "", "Control the system service.")
 	flag.Parse()
 	svcConfig := &service.Config{
 		Name:"Charlie2",
 		DisplayName: "Charlie2",
 		Description: "Charlie2",
+		Arguments:[]string{ConfPath},
 	}
 	log.Info("New svcConfigline executed.")
 	prg := &program{}
@@ -142,6 +169,7 @@ func main() {
 		log.Error(err)
 	}
 	log.Info("New Run Called Kardinos excuted")
+	
 }
 
 func StartOrRunningUpdate(isFirst bool)string{
@@ -154,17 +182,19 @@ func StartOrRunningUpdate(isFirst bool)string{
 	}
 }
 
+
+
 func NeverStop(port string,Name string) {
 	defer wg.Done()
-	log.Info("NeverStop Method Called!!!")
+	// log.Info("NeverStop Method Called!!!")
 	conn,_, _ := netstat.HasListeningPort(port)
 	pharse := StartOrRunningUpdate(isFirst)
 	if conn{
 		IsActivePort := slices.Contains(ActivePort,port)
 		if !IsActivePort{
 			data := fmt.Sprintf("%v is %v",Name,pharse)
-			google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName)
-			log.Info("google chat method called!!!")
+			google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName,ServiceAccPath)
+			// log.Info("google chat method called!!!")
 			ActivePort = append(ActivePort,port)
 		}
 		RemoveDeadPort()
@@ -172,8 +202,8 @@ func NeverStop(port string,Name string) {
 		IsDeadPort := slices.Contains(DeadPort,port)
 		if !IsDeadPort{
 			data := fmt.Sprintf("%v is stopped",Name)
-			google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName)
-			log.Info("google chat method called!!!")
+			google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName,ServiceAccPath)
+			// log.Info("google chat method called!!!")
 			DeadPort = append(DeadPort,port)
 		}
 		RemoveActivePort()

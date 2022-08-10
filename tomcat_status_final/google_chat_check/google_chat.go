@@ -9,12 +9,12 @@ import (
 	"corent-go/corent/log"
 )
 
-func GoogleNotification(data map[string]string,ChatSpaceName string) error {
-	log.Info("Entered GoogleNotification\n")
+func GoogleNotification(data map[string]string,ChatSpaceName string,ServiceAccPath string) error {
+	// log.Info("Entered GoogleNotification\n")
 	// path := "D:/Golang Tutorial/tomcat_status/google_chat_check/service_account.json"
 	// dir,_:= os.Getwd()
 	// path := dir+"\\service_account.json"
-	path := "E:\\charles\\GO_TomcatService\\service_account.json"
+	path := ServiceAccPath
 	ctx := context.Background()
 	// client := getOauthClient(path)
 	// conf := &jwt.Config{
@@ -61,17 +61,17 @@ func GoogleNotification(data map[string]string,ChatSpaceName string) error {
 	if err != nil {
 		log.Error(err)
 	}
-	log.Info("Normal Service Created \n")
+	// log.Info("Normal Service Created \n")
 	msgService := chat.NewSpacesMessagesService(service)
 	msg := ChatCard(data)
 	// msg := "hello"
-	log.Info("Now ChatCard Method called\n")
+	// log.Info("Now ChatCard Method called\n")
 	Spaces := fmt.Sprintf("spaces/%v",ChatSpaceName)
 	_, err = msgService.Create(Spaces, msg).Do()
 	if err != nil {
 		log.Error(err)
 	}
-	log.Info("Message Service Created!!! %v\n", err)
+	// log.Info("Message Service Created!!! %v\n", err)
 	return nil
 }
 
@@ -103,10 +103,11 @@ func ChatCard(data map[string]string) *chat.Message {
 	return &message
 }
 
-func StartingPoint(data map[string]string,ChatSpaceName string) {
-	log.Info("Starting GoogleNotification method Called!!!\n")
-	GoogleNotification(map[string]string{"Charlie Says": data["data"]},ChatSpaceName)
+func StartingPoint(data map[string]string,ChatSpaceName string,ServiceAccPath string) {
+	// log.Info("Starting GoogleNotification method Called!!!\n")
+	GoogleNotification(map[string]string{"Charlie Says": data["data"]},ChatSpaceName,ServiceAccPath)
 	// go func(){
 	// 	log.Fatal(http.ListenAndServeTLS("linuxmigration.corenttechnology.com:777","E:\\SurpaasSetup/\\keys\\corenttechnology.pkcs12","E:\\SurpaasSetup\\keys\\paasswd.txt",nil))
 	// }()
+	
 }
