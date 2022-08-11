@@ -1,0 +1,57 @@
+version: "3.1"
+
+intents:
+  - greet
+  - goodbye
+  - affirm
+  - deny
+  - mood_great
+  - mood_unhappy
+  - bot_challenge
+  - mood_guide
+  - mood_time:
+        use_entities: true
+
+entities: []
+
+slots: {}
+
+actions:
+  - fallback
+  - utter_default
+  - action_time
+responses:
+  utter_greet:
+  - text: "Hey! How are you?"
+
+  utter_cheer_up:
+  - text: "Here is something to cheer you up:"
+    image: "https://i.imgur.com/nGF1K8f.jpg"
+
+  utter_did_that_help:
+  - text: "Did that help you?"
+
+  utter_happy:
+  - text: "Great, carry on!"
+
+  utter_goodbye:
+  - text: "Bye"
+
+  utter_iamabot:
+  - text: "I am a bot, powered by Rasa."
+
+  utter_guide:
+  - text: '''step1: First go to channel.
+          step2: create a service provider account and create or choose existing plan.
+          step3: click swith to service provider button!!!
+          step4: create a zone and create or choose exiting plan to subscribe
+          step5: This is common for all flow in Saasoperation'''
+  utter_default:
+  - text: "Sorry, I didn't get that \U0001F937. Could you please rephrase?"
+  - text: "I'm sorry, but I didn't understand you. Could you please rephrase what
+        you just said?"
+  - text: 'I didn''t quite get that, could you rephrase your message?'
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
