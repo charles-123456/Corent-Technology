@@ -71,8 +71,8 @@ func (p *program) run() {
 			wg.Add(1)
 		}
 		go http.ListenAndServe(":8090", nil)
-		isFirst =false
 		wg.Wait()
+		isFirst =false
 			}
 }
 func (p *program) Stop(s service.Service) error {
