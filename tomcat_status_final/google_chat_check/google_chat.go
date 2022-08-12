@@ -2,7 +2,6 @@ package google_chat_check
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"google.golang.org/api/chat/v1"
 	"google.golang.org/api/option"
@@ -77,28 +76,12 @@ func GoogleNotification(data map[string]string,ChatSpaceName string,ServiceAccPa
 
 func ChatCard(data map[string]string) *chat.Message {
 
-	var widgets []*chat.WidgetMarkup
-	for key, value := range data {
-		widgets = append(widgets, &chat.WidgetMarkup{KeyValue: &chat.KeyValue{TopLabel: key, Content: value}})
+	var msg string;
+	for _, value := range data {
+		msg = value
 	}
-	fmt.Printf("All chat service widget created %v\n", widgets)
-	cards := `{
-       "cards": [
-           {
-               "sections": [
-                   {
-                       "widgets": []
-                   }
-               ]
-           }
-       ]
-   }`
-	// outputString := fmt.Sprintf(cards)
-	// fmt.Printf("Output string created %v\n", cards)
 	var message chat.Message
-	json.Unmarshal([]byte(cards), &message)
-
-	message.Cards[0].Sections[0].Widgets = widgets
+	message.Text = msg
 	// fmt.Printf("Chat msg values widgets %v %v", widgets, &message)
 	return &message
 }
