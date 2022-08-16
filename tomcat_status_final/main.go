@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"strings"
-	"github.com/mozilla/mig/modules/netstat"
 	"corent-go/google_chat_check"
 	"golang.org/x/exp/slices"
 	"sync"
@@ -14,6 +13,7 @@ import (
 	"github.com/magiconair/properties"
 	"net/http"
 	"path/filepath"
+	"net"
 )
 
 // "github.com/magiconair/properties"
@@ -187,12 +187,13 @@ func StartOrRunningUpdate(isFirst bool)string{
 func NeverStop(port string,Name string) {
 	defer wg.Done()
 	// log.Info("NeverStop Method Called!!!")
+	ipAddr := findRemoteIP()
 	conn,_, _ := netstat.HasListeningPort(port)
 	pharse := StartOrRunningUpdate(isFirst)
 	if conn{
 		IsActivePort := slices.Contains(ActivePort,port)
 		if !IsActivePort{
-			data := fmt.Sprintf("%v is %v",Name,pharse)
+			data := fmt.Sprintf("%v is %v IP is %v",Name,pharse,ipAddr)
 			google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName,ServiceAccPath)
 			// log.Info("google chat method called!!!")
 			ActivePort = append(ActivePort,port)
@@ -210,6 +211,43 @@ func NeverStop(port string,Name string) {
 	}
 }
 
+func findRemoteIP()string {
+	_,ele,_ := netstat.HasListeningPort("3399")
+	ip := findLocalIp()
+	var ipAddr string;
+	for _,e := range ele{
+		val := fmt.Sprintf("%v",e)
+		isContained := strings.Contains(val,ip)
+		if isContained{
+			getfullIp := strings.Split(val,"3399")
+			getIpwithspaces := getfullIp(len(getfullIp)-1)
+			removeSpace := strings.Split(getIpwithspaces," ")
+			ipAddr = removeSpace[1]
+		}
+	}
+	return ipAddr
+
+}
+
+func findLocalIp() string {
+	var ip string;
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		os.Stderr.WriteString("Oops: " + err.Error() + "\n")
+		os.Exit(1)
+	}
+
+	for _, a := range addrs {
+		
+		if ipnet, ok := a.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+			if ipnet.IP.To4() != nil {
+				ip = ipnet.IP.String()
+			}
+		}
+		
+	}
+	return ip
+}
 
 func RemoveActivePort(){
 	common, _ := intersection(ActivePort,DeadPort)
