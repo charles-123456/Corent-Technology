@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"net"
+	"github.com/mozilla/mig/modules/netstat"
 )
 
 // "github.com/magiconair/properties"
@@ -193,7 +194,7 @@ func NeverStop(port string,Name string) {
 	if conn{
 		IsActivePort := slices.Contains(ActivePort,port)
 		if !IsActivePort{
-			data := fmt.Sprintf("%v is %v IP is %v",Name,pharse,ipAddr)
+			data := fmt.Sprintf("%v is %v by this Resource:%v",Name,pharse,ipAddr)
 			google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName,ServiceAccPath)
 			// log.Info("google chat method called!!!")
 			ActivePort = append(ActivePort,port)
@@ -202,7 +203,7 @@ func NeverStop(port string,Name string) {
 	}else{
 		IsDeadPort := slices.Contains(DeadPort,port)
 		if !IsDeadPort{
-			data := fmt.Sprintf("%v is stopped",Name)
+			data := fmt.Sprintf("%v is stopped by this Resource:%v",Name,ipAddr)
 			google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName,ServiceAccPath)
 			// log.Info("google chat method called!!!")
 			DeadPort = append(DeadPort,port)
@@ -220,7 +221,7 @@ func findRemoteIP()string {
 		isContained := strings.Contains(val,ip)
 		if isContained{
 			getfullIp := strings.Split(val,"3399")
-			getIpwithspaces := getfullIp(len(getfullIp)-1)
+			getIpwithspaces := getfullIp[len(getfullIp)-1]
 			removeSpace := strings.Split(getIpwithspaces," ")
 			ipAddr = removeSpace[1]
 		}
