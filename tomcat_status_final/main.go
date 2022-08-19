@@ -15,6 +15,7 @@ import (
 	"path/filepath"
 	"net"
 	"github.com/mozilla/mig/modules/netstat"
+	"time"
 )
 
 // "github.com/magiconair/properties"
@@ -31,6 +32,7 @@ var(
 	isFirst = true
 	logger service.Logger
 	PropertyFile[]string
+	CurrentTime = time.Now()
 )
 
 func (p *program) Start(s service.Service) error {
@@ -128,9 +130,9 @@ func main() {
 	svcFlag := flag.String("service", "", "Control the system service.")
 	flag.Parse()
 	svcConfig := &service.Config{
-		Name:"Charlie2",
-		DisplayName: "Charlie2",
-		Description: "Charlie2",
+		Name:"Charlie",
+		DisplayName: "Charlie",
+		Description: "Charlie",
 		Arguments:[]string{ConfPath},
 	}
 	log.Info("New svcConfigline executed.")
@@ -191,10 +193,11 @@ func NeverStop(port string,Name string) {
 	ipAddr := findRemoteIP()
 	conn,_, _ := netstat.HasListeningPort(port)
 	pharse := StartOrRunningUpdate(isFirst)
+	Ist_format := CurrentTime.Format("01-02-2006 15:04:05 Mon")
 	if conn{
 		IsActivePort := slices.Contains(ActivePort,port)
 		if !IsActivePort{
-			data := fmt.Sprintf("%v is %v by this Host:%v",Name,pharse,ipAddr)
+			data := fmt.Sprintf("%v is %v by this Host:*%v* on the time:*%v*",Name,pharse,ipAddr,Ist_format)
 			google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName,ServiceAccPath)
 			// log.Info("google chat method called!!!")
 			ActivePort = append(ActivePort,port)
@@ -203,7 +206,7 @@ func NeverStop(port string,Name string) {
 	}else{
 		IsDeadPort := slices.Contains(DeadPort,port)
 		if !IsDeadPort{
-			data := fmt.Sprintf("%v is stopped by this Host:%v",Name,ipAddr)
+			data := fmt.Sprintf("%v is stopped by this Host:*%v* on the time:*%v*",Name,ipAddr,Ist_format)
 			google_chat_check.StartingPoint(map[string]string{"data": data},ChatSpaceName,ServiceAccPath)
 			// log.Info("google chat method called!!!")
 			DeadPort = append(DeadPort,port)
