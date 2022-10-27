@@ -1,25 +1,26 @@
-## 时间序列异常检测学件的架构
+
+## The architecture of Time Sequence abnormal testing
 
 ![code_arch.png](images/code_arch.png) 
 
-时间序列异常检测工程的整体分层，可以分为以下五层：
+The overall layer of the time sequence abnormal detection project can be divided into the following five layers:
 
-1. **数据层（DB）**：存储检测异常信息、样本信息、任务信息等
+1. ** Data layer (DB) **: Storage detection exception information, sample information, task information, etc.
 
-2. **服务层(SERVICE)**： 服务层划分为两大模块
+2. ** service layer (service) **: service layer is divided into two major modules
 
-    1. **数据驱动模块DAO**： 封装了和DB层常见的数据操作接口。
+1. ** Data Drive Module DAO **: The data operation interface with the DB layer is encapsulated.
     
-    2. **业务模块service**： 完成API层的具体业务逻辑。
+    2. ** Business module Service **: Complete the specific business logic of the API layer.
 
-3. **学件层(LEARNWARE)**：学件层划分为三大模块
+3. ** Learnware **: The academic layer is divided into three major modules
   
-   1. **检测模块detect**： 提供时间序列异常检测接口
+   1. ** Detection Module DETECT **: Provide time sequence abnormal detection interface
     
-   2. **特征计算模块features**： 提供三类时间序列的特征（统计特征、拟合特征、分类特征）用于对时序数据进行特征提取，在监督学习和训练中使用。
+   2. ** Feature calculation module Features **: Provides the characteristics of three types of time sequences (statistical features, fittings, classification features) for feature extraction of timing data, and use in supervision learning and training.
 
-   3. **算法模块algorithm**： 提供常见的几种机器学习算法封装（统计判别算法、指数移动平均算法、多项式算法、GBDT和xgboost等）用于对序数据进行联合仲裁检测。
+3. ** Algorithm module Algorithm **: Provide several common machine learning algorithm packaging (statistical discrimination algorithm, index moving average algorithm, polynomial algorithm, GBDT and XGBOOST, etc.) to jointly arbitral testing of order data.
     
-4. **接口层(API)**： 提供API能力，时间序列异常检测接口和WEB管理的操作接口。
+4. ** interface layer (API) **: Provide API capabilities, time sequence abnormal detection interface and web management operating interface.
 
-5. **WEB层(WEB)**： 系统提供的WEB服务，通过服务界面，用户可以进行异常查询、打标标注、样本库管理、模型训练等操作。
+5. ** Web layer (web) **: The web service provided by the system can perform operations such as abnormal queries, marking marking, sample library management, model training and other operations through the service interface.

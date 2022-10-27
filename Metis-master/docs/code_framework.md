@@ -1,67 +1,68 @@
-## 项目目录结构
 
-项目开发的目录结构保持一致，容易理解并方便管理。
+##
 
-## 目录结构
+The directory structure of the project development is consistent, easy to understand and easy to manage.
 
-- `/app/` 服务端工作目录
+## Directory Structure
 
-    `/app/controller/` 路由入口Action层
+-`/APP/`Server work directory
 
-    `/app/common/` 存放公共函数和常量定义
+`/app/controller/` routing entrance Action layer
 
-	`/app/dao/` 数据库表实例层
+`/APP/Common/` Store public functions and constant definitions
 
-	`/app/service/` 业务逻辑层
+`/app/dao/` database table instance layer table instance layer
 
-- `/uweb/` 管理端工作目录
+`/app/service/` business logic layer
 
-	`/uweb/custom/` WEB端所需静态文件目录
+-`/uWeb/`Management work directory
 
-	`/uweb/lib/` WEB端框架目录
+`/uWeb/CUSTOM/` web required static file directory
 
-	`/uweb/src/` WEB端开发目录
+`/uweb/lib/` web -end framework directory
 
-	`/uweb/src/pages/` WEB端所有页面的目录
+`/uweb/src/` web development directory
 
-	`/uweb/src/plugins/` WEB端自定义插件目录
+`/uWeb/src/pages/` web all pages of all pages of all pages
 
-	`/uweb/src/app.json` WEB端配置文件
+`/uweb/src/plugins/` `` Web -end custom plug -in directory
 
-	`/uweb/src/app.less` WEB端全局样式文件
+`/uweb/src/app.json` web configuration file
 
-	`/uweb/dist/` WEB端打包后的静态文件目录
+`/uweb/src/app.less` web global style file
 
-- `/time_series_detector/` 时间序列异常检测学件目录
+`/uweb/dist/` web packed the static file directory
 
-	`/time_series_detector/model/` 模型文件存放目录
-	
-	`/time_series_detector/algorithm/` 算法层
+-`/time_series_detector/`time sequence abnormal detection academic directory
 
-	`/time_series_detector/feature/` 特征层
-	
-	项目中支持以下类型的文件：
-    1. `.json`: 配置文件
-    2. `.uwx`: UWEB 视图文件
-    3. `.uw`: UWEB 逻辑脚本
-    4. `.js`: 普通 JavaScript 逻辑脚本
-    5. `.ts`: 普通 TypeScript 逻辑脚本
-    6. `.less`: Less 样式文件
-    7. `.css`: CSS 样式文件
-    8. `.jsx`: 开发自定义插件时可使用的 JavaScript React 脚本文件
-    9. `.tsx`: 开发自定义插件时可使用的 TypeScript React 脚本文件
-    10. `.png`、`.jpg`、`.gif`、`.svg`: 图片文件 
+`/time_series_detector/model/` model file storage directory
 
-- `/docs/` 项目文档存放目录
+`/time_series_detector/algorithm/` algorithm layer layer
+
+`/time_series_detector/feature/` feature layer
+
+Support the following types of files in the project:
+    1. `.json`: configuration file
+    2. `.uwx`: uweb view file
+    3. `.uw`: uweb logic script
+    4. `.js`: ordinary JavaScript logic script
+    5. `.TS`: ordinary TypeScript logic script
+    6. `.less`: LESS style file
+    7. `.css`: CSS style file
+    8. `.jsx`: JavaScript React script file that can be used when developing custom plugins
+    9. `.TSX`: TypeScript React script file that can be used when developing custom plugins
+    10. `.png`,` .jpg`, `.gif`,` .svg`: picture file
+
+-`/docs/`project document storage directory
 
 
-## 调用关系
+## call relationship
 
-`uweb` 为管理端工作目录，可调用服务端接口
+`uweb` is the management of the management side, the service side interface can be called
 
-`/app/controller/` 为服务端路由入口，可调用service业务层
+`/APP/Controller/` `the inlet of the server -side routing, the service layer can be called
 
-`/app/service/` 为service业务层，可调用私有对象dao数据库层和time_series_detector学件接口
+`/APP/Service/` is the service layer of the service.
 
-`/time_series_detector/` 学件目录，供service业务层调用
+`/time_series_detector/` academic directory for service layers
 

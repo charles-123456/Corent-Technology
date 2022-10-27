@@ -1,34 +1,35 @@
-## 学件
-“学件”(Learnware)一词由南京大学周志华老师原创，学件(Learnware) = 模型(model) + 规约(specification)，具有可重用、可演进、可了解的特性。
-很多人可能在自己的应用中已经建立了类似的模型，他们也很愿意找到一个地方把这些模型分享出去。这样一来，一个新用户想要应用，也许不用自己去建立一个，而是先到“学件”市场上找一找有没有合适的，拿来直接或修改后使用。学件基于专家基础上建立，所以比较容易得到专家级的结果，又因为共享出来的是模型，所以避免了数据泄露和隐私泄露的问题。
 
-## 运维学件
-“运维学件”也称为AI运维组件，类似程序中的API或公共库，但API及公共库不含具体业务数据，只是某种算法或者逻辑，而AI运维组件，则是在类似API的基础上，兼具对某个运维场景智能化解决的“记忆”能力，将处理这个场景的智能规则保存在了这个组件中。
-这个智能规则是在一定量的数据下学习而来的，且具有“可重用”，“可演进”，“可了解”的特性，既可共享由专家利用数据训练的算法模型，又可保护数据和隐私。
+## 件 学
+The term "Learnware" is originally created by Teacher Zhou Zhihua, Nanjing University.
+Many people may have established similar models in their own applications, and they are also willing to find a place to share these models.In this way, a new user wants to apply it, maybe you do n’t have to build one by yourself, but first go to the “academic” market to find a suitable one, and use it directly or modify it.Studying is based on experts, so it is easier to get the results of the expert level. Because of the shared model, the problem of data leakage and privacy leakage is avoided.
 
-## 应用案例场景
+### 维 维 维 维 维#
+"Operation and Maintenance Process" is also known as AI operation and maintenance components. APIs or public libraries similar to programs, but API and public libraries do not include specific business data, just some algorithm or logic, and AI operation and maintenance components areSimilar to API, the "memory" capabilities that are both intelligent solutions to a certain Yunwei scenarios have preserved the intelligent rules that handle this scene in this component.
+This intelligent rule is learned from a certain amount of data, and has the characteristics of "reusable", "evolution", and "understandable".And privacy.
 
-时间序列异常检测学件经过海量监控数据打磨，在异常检测和运维监控告警领域具有广泛的应用性。
+## Application Case Scene
+
+Time sequence abnormal detection academic permit has been polished by massive monitoring data, and is widely used in the field of abnormal detection and operation and maintenance monitoring alarm.
 
 ![time_series_detector](images/time_series_detector.png)
 
-### 功能特性
+### Functiontional characteristics
 
-时间序列异常检测学件：
+Time sequence abnormal testing:ce abnormal testing:
 
-* 异常检测API：提供率值检测和量值检测API接口，对时间序列进行检测
+* Abnormal detection API: Provide rate detection and quantity detection API interface, test the time sequence
 
-时间序列异常检测学件支撑系统：
+Time sequence abnormal detection academic support system:
 
-* 特征提取：提供三类特征（统计特征、拟合特征、分类特征）的提取功能，特征维度90+；支持增加自定义特征
-* 异常查询：经API检测后的时间序列（仅异常）入库存储，提供管理功能，分页查询、检索、放缩等
-* 标注打标：提供标注打标的功能，标记/取消标记为正负样本，标记后样本自动转存样本库
-* 样本管理：提供样本管理功能，检索、图示、编辑、删除，导入等功能
-* 模型管理：提供模型管理功能，支持自定义模型训练
+* Extracting features: Provide the extraction function of three types of characteristics (statistical features, fittings, and classification features), feature dimensions 90+; support to increase custom features
+* Abnormal query: The time sequence (only abnormal) after the API detection (only abnormal) is stored in storage, providing management functions, paging query, retraction, shrinking, etc.
+* Label labeling: Provide the function of labeling, mark/cancel the label as positive and negative sample, and automatically transfer the sample library after the marker
+* Sample management: Provide functions of sample management functions, retrieval, map, edit, delete, import and other functions
+* Model management: Provide model management functions, support custom model training
 
-### 应用数据场景
+### Application data scenario
 
-* 操作系统数据：适用于检测操作系统层面的基础监控数据，例如CPU、内存、磁盘、流量、包量等。
-* 应用程序数据：适用于检测应用程序运行中记录的时序数据，例如读写量、调用量、自定义监控指标等。
-* KPI指标数据：适用于检测业务KPI数据，例如交易量、收入值、在线数、成功率、失败量等业务关键指标。
+* Operating system data: Suitable for basic monitoring data at the level of operating system, such as CPU, memory, disk, traffic, package volume, etc.
+* Application data: It is suitable for detecting the timing data recorded in the operation of the application, such as reading and writing, calls, and custom monitoring indicators.
+* KPI index data: suitable for detecting KPI data, such as transaction volume, income value, online number, success rate, failure and other key indicators.
 

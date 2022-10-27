@@ -21,15 +21,15 @@ TRAIN_ERR = 2003
 LACK_SAMPLE = 2004
 
 ERR_CODE = {
-    OP_SUCCESS: "操作成功",
-    THROW_EXP: "抛出异常",
-    OP_DB_FAILED: "数据库操作失败",
-    CHECK_PARAM_FAILED: "参数检查失败",
-    FILE_FORMAT_ERR: "文件格式有误",
-    NOT_POST: "非post请求",
-    NOT_GET: "非get请求",
-    CAL_FEATURE_ERR: "特征计算出错",
-    READ_FEATURE_FAILED: "读取特征数据失败",
-    TRAIN_ERR: "训练出错",
-    LACK_SAMPLE: "缺少正样本或负样本"
+  Op_success: "Successful operation",
+    Throw_exp: "Throwing abnormalities",
+    OP_DB_FAILED: "Database operation failed",
+    Check_param_faird: "Parameter check failed",
+    File_format_err: "The file format is wrong",
+    Not_post: "Non -POST request",
+    Not_get: "Non -get request",
+    CAL_FEATURE_ERR: "Features Calculate Error",
+    Read_feature_faird: "Reading feature data failed",
+    Train_err: "Training errors",
+    Lack_sample: "Lack of positive samples or negative samples"
 }
