@@ -1,76 +1,87 @@
-## 安装文档
 
-# 目录
-> * [方式1：手工安装部署](#chapter-1)
->> * [依赖环境](#chapter-1-1)
->> * [数据库环境安装](#chapter-1-2)
->> * [服务端环境安装](#chapter-1-3)
->> * [WEB管理端环境安装](#chapter-1-4)
->
-> * [方式2：docker安装部署](#chapter-2)
-> 
-本安装文档仅描述了在一台服务器上安装搭建整个Metis的过程，目的是为了让用户对Metis的部署搭建、运行等整体认识。
+## Installation document
 
-如要用于生产环境，需要更多考虑分布式系统下容错、容灾能力。若有需要，可以加入Metis的qq技术交流群：288723616。
+# Table of contents
+> * [Method 1: Manual installation deployment] (#Chapter-1)
+>> * [Dependent Environment] (#Chapter-1-1)
+>> * [Database Environment Installation] (#Chapter-2)
+>> * [Installation of the service side environment] (#Chapter-3)
+>> * [Web Management Economy Installation] (#Chapter-1-4)
+Forecast
+> * [Method 2: Docker Installation Deployment] (#Chapter-2)
+Forecast
+This installation document only describes the process of installing the entire Metis on one server, the purpose is to allow users to understand the overall understanding of Metis's deployment and operation.
 
-本文档提供两种安装方式：手工安装部署和docker安装部署。可以根据需要选择任意一种安装方式。
+If you want to be used for the production environment, you need to consider more faults and disaster tolerance in distributed systems.If necessary, you can join the QQ technical exchange group of Metis: 288723616.
 
-# 1. <a id="chapter-1"></a>手工安装部署
-## 1.1. <a id="chapter-1-1"></a>依赖环境
+This document provides two installation methods: manual installation deployment and docker installation deployment.You can choose any installation method as needed.
 
-| 软件  | 软件要求 |
-| ---  | ---  |
-| linux发行版:| CentOS 7.4 |
-| python版本:| 2.7版本|
-| MySQL版本:| 5.6.26及以上版本|
-| Node.js版本:| 8.11.1及以上版本|s
-| Django版本:| 1.x.x 版本|
+# 1. <a ID="chapter-1"> </a> Manual installation deployment
+## 1.1. <a ID="chapter-1"> </a> dependence on the environment
 
-运行服务器要求：1台普通安装linux系统的机器即可（推荐CentOS系统），服务器需要开放80和8080端口
+| Software | Software Requirements |
+| --- | --- | |
+| Linux distribution version: | CentOS 7.4 |
+| python version: | 2.7 version |
+| MySQL version: | 5.6.26 and above version |
+| Node.js version: | 8.11.1 and above | S
+| Django version: | 1.x.x version |
 
-以下步骤假定安装机器的代码目录是 `/data/Metis/`，可根据实际情况更改。
+Run the server requirements: 1 ordinary machine installed Linux system (recommended CentOS system). The server needs to open port 80 and 8080 ports
 
-## 1.2. <a id="chapter-1-2"></a>数据库环境安装
+The following steps assume that the code directory of the installation machine is `/data/metis/`, which can be changed according to the actual situation.
 
-### 1.2.1. MySQL 安装介绍
+## 1.2. <a ID="chapter-2"> </a> Database environment installation
 
-采用yum源安装或者在MySQL官网下载源码安装，安装好后检测MySQL服务是否正常工作。
+### 1.2.1. Mysql installation introductionallation introduction
 
+Use YUM source installation or install the source code installation under the MySQL official website.
+
+---
 ```
 yum install mariadb-server
 systemctl start mariadb
 ```
+---
 
-### 1.2.2. 初始化数据库
+### 1.2.2. Initialize the database
 
-为了方便快速体验，提供了10+异常检测结果数据和300+样本数据供大家使用。
+In order to facilitate fast experience, 10+ abnormal detection results data and 300+ sample data are provided for everyone to use.
 
-1、创建需要的数据库用户名并授权，连接MySQL客户端并执行
+1. Create the required database user name and authorize, connect the MySQL client and execute
 
+---
 ```
    grant all privileges on metis.* to metis@127.0.0.1  identified by 'metis@123';
    flush privileges;
 ```
-   
-2、创建数据库 `metis`，在命令行下执行
+---
+2. Create a database `metis`, execute under the command line
 
+---
 ```
 mysqladmin -umetis -pmetis@123 -h127.0.0.1 create metis
 ```
+---
 
-3、将`/Metis/app/sql/time_series_detector/`目录下的sql初始化文件，导入数据`metis`数据库
+3. Put the SQL initialization file in the `Metis/App/SQL/TIME_SERIES_DETECTOR/` directory, import the data `metis` database
 
+---
 ```
 mysql -umetis -pmetis@123 -h127.0.0.1 metis < /data/Metis/app/sql/time_series_detector/anomaly.sql
 mysql -umetis -pmetis@123 -h127.0.0.1 metis < /data/Metis/app/sql/time_series_detector/sample_dataset.sql
 mysql -umetis -pmetis@123 -h127.0.0.1 metis < /data/Metis/app/sql/time_series_detector/train_task.sql
 ```
+---
 
-4、将数据库配置信息更新到服务端配置文件`database.py`
+4. Update the database configuration information to the server -side configuration file `database.py`
+---
 ```
 vim /data/Metis/app/dao/db_common/database.py
 ```
-改写配置
+---
+Rewritten configuration
+---
 ```
 DB = 'metis'
 USER = 'metis'
@@ -78,71 +89,87 @@ PASSWD = 'metis@123'
 HOST = '127.0.0.1'
 PORT = 3306
 ```
+---
 
-## 1.3. <a id="chapter-1-3"></a>服务端环境安装
+## 1.3. <a ID="chapter-3"> </a> Installation
 
-服务端python程序需要依赖django、numpy、tsfresh、MySQL-python、scikit-learn等包
+The server Python program needs to rely on Django, Numpy, TSFRESH, MySQL-Python, Scikit-Learn and other packages
 
-### 1.3.1. yum 安装依赖包
+### 1.3.1. Yum installation dependency package
 
+---
 ```
 yum install python-pip
 pip install --upgrade pip
 yum install gcc libffi-devel python-devel openssl-devel
 yum install mysql-devel
 ```
+---
 
-### 1.3.2. pip 安装python依赖包
+### 1.3.2. PIP Install Python dependency package
 
-通过工程目录下`/Metis/docs/requirements.txt`安装
+Install through the project directory `/metis/docs/requirements.txt`
 
+---
 ```
 pip install -I -r requirements.txt
 ```
+---
 
-### 1.3.3. 工作目录加入环境变量
+### 1.3.3.
 
+---
 ```
 export PYTHONPATH=/data/Metis:$PYTHONPATH
 ```
+---
 
-为了保证下次登陆可以导入环境变量,请将环境变量配置写入服务器的`/etc/profile`文件中
+In order to ensure that you can import environment variables next time, please write the environment variable configuration to the server's `/etc/profile` file of the server
 
 
-### 1.3.4. 启动服务端
+### 1.3.4. Start the server
 
-启动服务端程序，ip请替换为服务器真实ip地址
+Start the server program, please replace it with the IP address of the server
 
+---
 ```
 python /data/Metis/app/controller/manage.py runserver {ip}:{port}
 ```
+---
 
-此启动模式为Django的调试模式。如果需要部署生产环境，可通过nginx和uwsgi部署，具体请参考对应官网说明
+This startup mode is the debug mode of Django.If you need to deploy the production environment, you can deploy through nginx and UWSGI. For details, please refer to the corresponding official website description
 
-## 1.4. <a id="chapter-1-4"></a>WEB管理端环境安装
+## 1.4. <a ID="chapter-4"> </a> Web management end environment installation
 
-### 1.4.1. Node.js安装
+### 1.4.1. Node.js installation
 
-需先安装[Node.js](https://nodejs.org/en/download/)，并且Node.js的版本需不低于 8.11.1
+---
+```go
 
-### 1.4.2. npm install安装前端依赖
+```
+---
 
-安装`/Metis/uweb/pacakge.json`配置文件中依赖的第三方安装包
+You need to install [node.js] (https://nodejs.org/en/download/), and the version of the node.js needs not less than 8.11.1
 
-进入到uweb目录，执行npm install
+### 1.4.2. NPM Install the front end dependencies
 
-### 1.4.3. 编译代码
+Installation `/metis/web/package.json` The third -party installation package dependent in the configuration file
 
-修改`/Metis/uweb/src/app.json`文件的后端地址配置: "origin": "http://${ip}:${port}" , ip和port对应服务端地址
+Enter the UWEB directory and execute NPM Install
 
-运行npm run build
+### 1.4.3. Compile code
 
-将uweb目录下的custom文件夹复制到uweb目录下生成的dist文件夹中
+Modify the back -end address configuration of the `/metis/uweb/src/app.json` file:" Origin ":" http: // $ {IP}: $ {port} ", IP and Port corresponding to the service side address
 
-将nginx配置文件中的root定位到uweb目录下的dist文件夹
+Run NPM Run Build
 
-nginx配置如下：
+Copy the Custom folder in the uweb directory to the distal folder generated in the UWEB directory
 
+Position the root in the nginx configuration file to the distal folder in the UWEB directory
+
+Nginx configuration is as follows:
+
+---
 ```
 server {
         listen       80;
@@ -164,40 +191,47 @@ server {
         }
     }
 ```
+---
 
-### 1.4.4. 启动WEB服务
+### 1.4.4. Start the web service
 
-nginx正常启动后，打开浏览器并访问 `http://${ip}:80/`
+After nginx starts normally, open the browser and visit `http:// $ {ip}: 80/`
 
-### 1.4.5. 本地修改调试
+### 1.4.5.
 
-如本地修改代码，发布更新方式如下：
+If the code is modified locally,the update method is as follows:
 
-npm run build 项目代码开发完成后，执行该命令打包项目代码。在项目根目录会生成一个 dist 目录，然后复制custom目录，放至dist目录下。发布时，将 dist 目录中的全部文件作为静态文件，放至服务器指定的静态文件目录即可
+After the development of the NPM Run Build project code is completed, the order is executed to pack the project code.A DIST directory will be generated in the project root directory, and then copy the Custom directory and put it in the DIST directory.At the time of release, put all the files in the DIST directory as a static file and put it to the static file directory specified by the server
 
-安装完成后，请参考API使用说明进行API调用
+After the installation is completed, please refer to the API instructions for API call
 
-# 2. <a id="chapter-5"></a>docker安装部署
+# 2. <a ID="chapter-5"> </a> Docker installation deployment
 
-## 2.1. 安装docker
+## 2.1. Install docker
 
+---
 ```
 yum install docker
 service docker start
 ```
+---
 
-## 2.2. <a id="chapter-2"></a> 部署docker环境
-执行部署文件
+## 2.2. <a ID="chapter-2"> </a> deploy the docker environment
+Execute deployment file
+---
 ```
-Metis/docker/start.sh ${IP}
+metis/docker/startSh ${ip}
 ```
-等待部署完成后，执行docker ps命令
+---
+After the deployment is completed, execute the docker PS command
+---
 ```
 docker ps
-``` 
-查看三个容器（metis-db、metis-web、metis-svr）启动状态，如正常启动，则安装成功。
+```
+---
+View the starting status of the three containers (Metis-DB, Metis-WEB, Metis-SVR). If it starts normally, the installation is successful.
 ![docker_ps](images/docker_ps.png)
-如安装成功，可以通过浏览器直接访问: `http://${IP}`
-注意：Metis依赖80和8080端口，腾讯云服务器默认开通了80但没有开通8080的外网访问权限，需要手动在安全组中增加对8080端口的放通。
+If the installation is successful, you can directly access it through the browser: `http: // $ {ip}`
+Note: Metis relies on ports 80 and 8080. Tencent Cloud Server has opened 80 outer network access rights by default but did not open 8080. It is necessary to manually add port 8080 to the security group.
 
-请参考API使用说明进行API调用 
+Please refer to the API instructions for API calling
