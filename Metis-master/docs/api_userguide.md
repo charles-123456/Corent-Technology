@@ -1,3 +1,4 @@
+
 # API接口文档
 ## 时间序列异常检测接口
 
@@ -7,141 +8,148 @@
 
 2、率值检测：适用于正态分布类型数据的检测，使用无监督算法进行检测，如成功率等生死指标数据的检测
 
-- HTTP接口调用请使用搭建的后端服务地址；Python接口可直接调用
-- 当前检测时间窗口选取为3小时，每分钟1个数据点，即窗口值为180
-- 同比数据日期和时间段的选择可根据实际情况调整，文档中两个同比数据分别取昨日和一周前的同比
+-HTTP interface call, please use the built back -end service address; Python interface can be directly called
+-The current detection time window is selected for 3 hours, 1 data point per minute, that is, the window value is 180
+-The selection of data date and time period can be adjusted according to the actual situation. The two data in the document take the year -on -year year -on -year year -on -year data.
 
 针对当前一个值的检测，需要依赖过去三段数据，数据选取规则参考示例图：
 ![data_info](images/data_info.png)
 
-### 一、HTTP接口
+### 1. HTTP interface
 
-#### 1、量值检测
+#### 1, quantity detection
 
-* API： POST /{ip}:{port}/PredictValue
-* 功能说明：根据参考数据检测最近一个数据点是否异常
-* 请求参数request：
-	
+* API: Post /{IP}: {Port} /PredictValue
+* Function description: Check whether the latest data point is abnormal according to the reference data
+* Request parameter request:
+---
 ```
-{
-    "viewId":"2012",
-    "viewName":"登陆功能",
-    "attrId":"19201",
-    "attrName":"ptlogin登陆请求总量",
-    "taskId":"1530608070706",
-    "window":180,
-    "time":"2018-10-17 17:28:00",
-    "dataC":"9,10,152,...,255,...,16",
-    "dataB":"9,10,152,...,255,...,18",
-    "dataA":"9,10,152,...,458"
+{{
+    "Viewid": "2012",
+    "ViewName": "Login function",
+    "Attrid": "19201",
+    "Attrname": "Ptlogin login request total amount",
+    "taskid": "1530608070706",
+    "Window": 180,
+    "time": "2018-10-17 17:28:00",
+    "DataC": "9,10,152, ..., 255, ..., 16",
+    "datab": "9,10,152, ..., 255, ..., 18",
+    "Dataa": "9,10,152, ..., 458"
 }
 ```
+---
 
-* request字段说明：
+* Request field description:
 
-| 名称  | 类型 |必填| 默认值 | 说明 |
-| --- | --- | --- |---- | --- |
-| viewId| string| 是|无|指标集ID |
-| viewName|  string| 是| 无|指标集名称|
-| attrId|  string| 是| 无|指标ID|
-| attrName|  string| 是| 无|指标名称|
-| taskId|  string| 否| 无|使用的检测模型，如不传，则采用系统默认模型|
-| window|  int| 是| 无|窗口值，目前支持180|
-| time|  string| 是| 无|待检测点的时间标识，即dataA的最后一个点，格式："yyyy-MM-dd HH:mm:ss"|
-| dataC|  string| 是| 无|待检测的1个点对应一周前同时刻的点 + 前后各180个数据，361个数据点按时间顺序拼接，英文逗号分隔|
-| dataB|  string| 是| 无|待检测的1个点对应昨日同时刻的点 + 前后各180个数据，361个数据点按时间顺序拼接，英文逗号分隔|
-| dataA|  string| 是| 无|待检测的1个点+前180个数据，共181个数据点，181个数据点按时间顺序拼接，英文逗号分隔|
+| Name | Type | Must -Fill | Default value | Description |
+| --- | --- | --- | ---- | --- |
+| Viewid | String | Yes | No | Index Collection ID |
+| ViewName | String | Yes | No | Index Collection Name |
+| Attrid | String | Yes | No | Index ID |
+| Attrname | String | Yes | No | Index Name |
+| Taskid | String | No | No | The detection model used, if not passed, use the system default model |
+| Window | int | Yes | No | Window value, currently supports 180 |
+| Time | String | Yes | Yes | No | The time identification of the detection point, that is, the last point of the dataa, format: "yyyy-mm-dd HH: SS" | |
+| DataC | String | Yes | No | 1 point to be tested corresponds to the point of the same time a week ago + 180 data before and after, 361 data points are stitched in the order of time, the English community is separated |
+| datab | String | Yes | No | 1 point to be tested corresponds to the point of the same time yesterday + 180 data before and after, 361 data points are stitched in order of time, English comma separation |
+| Dataa | String | Yes | No | 1 point to be tested+180 data, a total of 181 data points, 181 data points stitching in the order of time, English community separation |
 
 
-* 详情参数response：
+* Details parameter Response:
+---
 ```
-{
-    "code":0,
-    "msg":"操作成功",
-    "data":
-    {
-        "ret":0,
-        "p":"0.05",
+{{
+    "code": 0,
+    "MSG": "Successful operation",
+    "Data":
+    {{
+        "RET": 0,
+        "P": "0.05",
     }
 }
 ```
+---
 
-* response 字段说明：
+* Response field description:
 
-| 名称  | 类型  | 说明 |
-|---|---|---|
-| code | int | 返回码。0:成功；非0:失败 |
-| msg | string | 返回消息 |
-| ret | int | 检测结果是否异常。0:异常；1:正常 |
-| p | string | 概率值，值越小，判定为异常的置信度越高，目前p<0.15，判决为异常 |
+| Name | Type | Description |
+| --- | --- | --- | |
+| code | int | Return code.0: Success; Fei 0: Failure |
+| msg | string | Return message |
+| RET | int | The test results are abnormal.0: Abnormal; 1: Normal |
+| P | String | Probability value, the smaller the value, the higher the determination of the decision as abnormal. At present, P <0.15, the judgment is abnormal |
 
-#### 2、率值检测
+#### 2. Rate value detection
 
-* API： POST /{ip}:{port}/PredictRate
-* 功能说明：根据参考数据检测最近一个数据点是否异常
-* 请求参数request：
-	
+* API: Post /{IP}: {Port} /Predictrate
+* Function description: Check whether the latest data point is abnormal according to the reference data
+* Request parameter request:
+---
 ```
-{
-    "viewId":"2012",
-    "viewName":"登陆功能",
-    "attrId":"19201",
-    "attrName":"ptlogin登陆成功率",
-    "window":180,
-    "time":"2018-10-17 17:28:00",
-    "dataC":"100,99.8,100,...,100,...,100",
-    "dataB":"99.5,100,100,...,99.6,...,100",
-    "dataA":"100,98.5,100,...,85.9"
+{{
+    "Viewid": "2012",
+    "ViewName": "Login function",
+    "Attrid": "19201",
+    "Attrname": "Ptlogin login success rate",
+    "Window": 180,
+    "time": "2018-10-17 17:28:00",
+    "DataC": "100,99.8,100, ..., 100, ..., 100",
+    "datab": "99.5,100,100, ..., 99.6, ..., 100",
+    "Dataa": "100,98.5,100, ..., 85.9"
 }
 ```
+---
 
 * request字段说明：
 
-| 名称  | 类型 |必填| 默认值 | 说明 |
-| ---  | ---  | --- |---  | --- |
-| viewId| string| 是|无|指标集ID |
-| viewName|  string| 是| 无|指标集名称|
-| attrId|  string| 是| 无|指标ID|
-| attrName|  string| 是| 无|指标名称|
-| window|  int| 是| 无|窗口值，目前支持180|
-| time|  string| 是| 无|待检测点的时间标识，即dataA的最后一个点，格式："yyyy-MM-dd HH:mm:ss"|
-| dataC|  string| 是| 无|待检测的1个点对应一周前同时刻的点 + 前后各180个数据，361个数据点按时间顺序拼接，英文逗号分隔|
-| dataB|  string| 是| 无|待检测的1个点对应昨日同时刻的点 + 前后各180个数据，361个数据点按时间顺序拼接，英文逗号分隔|
-| dataA|  string| 是| 无|待检测的1个点+前180个数据，共181个数据点，181个数据点按时间顺序拼接，英文逗号分隔|
+| Name | Type | Must -Fill | Default value | Description |
+| --- | --- | --- | --- | --- |
+| Viewid | String | Yes | No | Index Collection ID |
+| ViewName | String | Yes | No | Index Collection Name |
+| Attrid | String | Yes | No | Index ID |
+| Attrname | String | Yes | No | Index Name |
+| Window | int | Yes | No | Window value, currently supports 180 |
+| Time | String | Yes | Yes | No | The time identification of the detection point, that is, the last point of the dataa, format: "yyyy-mm-dd HH: SS" | |
+| DataC | String | Yes | No | 1 point to be tested corresponds to the point of the same time a week ago + 180 data before and after, 361 data points are stitched in the order of time, the English community is separated |
+| datab | String | Yes | No | 1 point to be tested corresponds to the point of the same time yesterday + 180 data before and after, 361 data points are stitched in order of time, English comma separation |
+| Dataa | String | Yes | No | 1 point to be tested+180 data, a total of 181 data points, 181 data points stitching in the order of time, English community separation |
 
 
-* 详情参数response：
+* Details parameter Response:
 
+---
 ```
-{
-    "code":0,
-    "msg":"操作成功",
-    "data":
-    {
-        "ret":0,
-        "p":"0",
+{{
+    "code": 0,
+    "MSG": "Successful operation",
+    "Data":
+    {{
+        "RET": 0,
+        "P": "0",
     }
 }
 ```
+---
 
-* response 字段说明：
+* Response field description:
 
-| 名称  | 类型  | 说明 |
-|---|---|---|
-| code | int | 返回码。0:成功；非0:失败 |
-| msg | string | 返回消息 |
-| ret | int | 检测结果是否异常。0:异常；1:正常 |
-| p | string | 概率值，值越小，判定为异常的置信度越高 |
+| Name | Type | Description |
+| --- | --- | --- | |
+| code | int | Return code.0: Success; Fei 0: Failure |
+| msg | string | Return message |
+| RET | int | The test results are abnormal.0: Abnormal; 1: Normal |
+| P | String | Probability value, the smaller the value.
 
 ### 二、Python API
 
-Metis工程目录下time_series_detector目录为时间序列异常检测学件，可以在python代码中直接调用
+Time_series_detector directory in the metis engineering directory is the time series abnormal detection and academic parliament, which can be directly called in the Python code
 
-#### 1、量值检测
-* 功能说明：根据参考数据检测最近一个数据点是否异常
+#### 1, quantity detection
+* Function description: Check whether the latest data point is abnormal according to the reference data
 
-* 调用方法： 
+* Calling method:
 
+---
 ```
 # Python
 from time_series_detector import detect
@@ -149,10 +157,11 @@ from time_series_detector import detect
 detect_obj = detect.Detect()
 detect_obj.value_predict(data)
 ```
+---
 
 
-* 传入参数：python字典
-	
+* Pass parameter: python dictionary
+---
 ```
 {
     "window":180,
@@ -161,20 +170,22 @@ detect_obj.value_predict(data)
     "dataA":"9,10,152,...,458"
 }
 ```
+---
 
-* 传入参数说明：
+* Pass parameter description:
 
-| 名称  | 类型 |必填| 默认值 | 说明 |
-| --- | --- | --- |---- | --- |
-| taskId|  string| 否| 无|使用的检测模型，如不传，则采用系统默认模型|
-| window|  int| 否| 无|窗口值，目前支持180|
-| dataC|  string| 是| 无|待检测的1个点对应一周前同时刻的点 + 前后各180个数据，361个数据点按时间顺序拼接，英文逗号分隔|
-| dataB|  string| 是| 无|待检测的1个点对应昨日同时刻的点 + 前后各180个数据，361个数据点按时间顺序拼接，英文逗号分隔|
-| dataA|  string| 是| 无|待检测的1个点+前180个数据，共181个数据点，181个数据点按时间顺序拼接，英文逗号分隔|
+| Name | Type | Must -Fill | Default value | Description |
+| --- | --- | --- | ---- | --- |
+| Taskid | String | No | No | The detection model used, if not passed, use the system default model |
+| Window | int | No | No | No | Window value, currently supports 180 |
+| DataC | String | Yes | No | 1 point to be tested corresponds to the point of the same time a week ago + 180 data before and after, 361 data points are stitched in the order of time, the English community is separated |
+| datab | String | Yes | No | 1 point to be tested corresponds to the point of the same time yesterday + 180 data before and after, 361 data points are stitched in order of time, English comma separation |
+| Dataa | String | Yes | No | 1 point to be tested+180 data, a total of 181 data points, 181 data points stitching in the order of time, English community separation |
 
 
 
-* 返回参数：
+* Return to parameters:
+---
 ```
     code, {
         "ret":0,
@@ -182,24 +193,26 @@ detect_obj.value_predict(data)
     }
 
 ```
+---
 
-* 返回参数说明：
+* Return to parameter description:
 
-| 名称  | 类型  | 说明 |
-|---|---|---|
-| code | int | 返回码。0:成功；非0:失败 |
-| ret | int | 检测结果是否异常。0:异常；1:正常 |
-| p | string | 概率值，值越小，判定为异常的置信度越高，目前p<0.15，判决为异常 |
+| Name | Type | Description |
+| --- | --- | --- | |
+| code | int | Return code.0: Success; Fei 0: Failure |
+| RET | int | The test results are abnormal.0: Abnormal; 1: Normal |
+| P | String | Probability value, the smaller the value, the higher the determination of the decision as abnormal. At present, P <0.15, the judgment is abnormal |
 
-* 调用案例：
+* Call the case:
 
 ![data_info](images/python_api_value_predict.png)
 
-#### 2、率值检测
-* 功能说明：根据参考数据检测最近一个数据点是否异常
+#### 2. Rate value detection
+* Function description: Check whether the latest data point is abnormal according to the reference data
 
-* 调用方法： 
+* Calling method:
 
+---
 ```
 # Python
 from time_series_detector import detect
@@ -207,9 +220,10 @@ from time_series_detector import detect
 detect_obj = detect.Detect()
 detect_obj.rate_predict(data)
 ```
+---
 
-* 传入参数：python字典
-	
+* Pass parameter: python dictionary
+---
 ```
 {
     "dataC":"9,10,152,...,255,...,16",
@@ -217,18 +231,20 @@ detect_obj.rate_predict(data)
     "dataA":"9,10,152,...,458"
 }
 ```
+---
 
-* 传入参数说明：
+* Pass parameter description:
 
-| 名称  | 类型 |必填| 默认值 | 说明 |
-| ---  | ---  | --- |---  | --- |
-| dataC|  string| 是| 无|待检测的1个点对应一周前同时刻的点 + 前后各180个数据，361个数据点按时间顺序拼接，英文逗号分隔|
-| dataB|  string| 是| 无|待检测的1个点对应昨日同时刻的点 + 前后各180个数据，361个数据点按时间顺序拼接，英文逗号分隔|
-| dataA|  string| 是| 无|待检测的1个点+前180个数据，共181个数据点，181个数据点按时间顺序拼接，英文逗号分隔|
+| Name | Type | Must -Fill | Default value | Description |
+| --- | --- | --- | --- | --- |
+| DataC | String | Yes | No | 1 point to be tested corresponds to the point of the same time a week ago + 180 data before and after, 361 data points are stitched in the order of time, the English community is separated |
+| datab | String | Yes | No | 1 point to be tested corresponds to the point of the same time yesterday + 180 data before and after, 361 data points are stitched in order of time, English comma separation |
+| Dataa | String | Yes | No | 1 point to be tested+180 data, a total of 181 data points, 181 data points stitching in the order of time, English community separation |
 
 
 
-* 返回参数：
+* Return to parameters:
+---
 ```
     code, {
         "ret":0,
@@ -236,44 +252,46 @@ detect_obj.rate_predict(data)
     }
 
 ```
+---
 
-* 返回参数说明：
+* Return to parameter description:
 
-| 名称  | 类型  | 说明 |
-|---|---|---|
-| code | int | 返回码。0:成功；非0:失败 |
-| ret | int | 检测结果是否异常。0:异常；1:正常 |
-| p | string | 概率值，值越小，判定为异常的置信度越高，目前p<0.15，判决为异常 |
+| Name | Type | Description |
+| --- | --- | --- | |
+| code | int | Return code.0: Success; Fei 0: Failure |
+| RET | int | The test results are abnormal.0: Abnormal; 1: Normal |
+| P | String | Probability value, the smaller the value, the higher the determination of the decision as abnormal. At present, P <0.15, the judgment is abnormal |
 
-* 调用案例：
+* Call the case:
 
 ![data_info](images/python_api_rate_predict.png)
 
-### 三、LIB库
-Metis工程目录下time_series_detector/lib为学件动态库目录，库文件可以在代码中加载调用
+### 3, lib library
+Time_Series_detector/lib is the academic dynamic library directory in the metis project directory. The library file can be loaded in the code
 
-libdetect.so目前支持在CentOs7.2+系统环境下使用
+libdetect.so is currently supporting use in CentOS7.2+system environment
 
 
 
-#### Python代码中调用:
+#### python code call:
 
-##### 1、量值检测
-* 功能说明：根据参考数据检测最近一个数据点是否异常
+##### 1, quantity detection
+* Function description: Check whether the latest data point is abnormal according to the reference data
 
-* 调用方法： 
+* Calling method:
 
- 加载so库：
- 
+Load the so library:
+---
 ```
 # Python
 so = cdll.LoadLibrary
 metis_lib = so("./libdetect.so")
 handle = metis_lib.load_model("./xgb_default_model")
 ```
+---
 
-  构造传入数据：
-   
+Construction data:
+---
 ```
 # Python
 from ctypes import *
@@ -293,9 +311,11 @@ pbarray = (c_int * len(data_b))(*data_b)
 pcarray = (c_int * len(data_c))(*data_c)
 data_value = ValueData(paarray, pbarray, pcarray, len(data_a), len(data_b), len(data_c))  
 ```
+---
 
-调用计算函数：
+Calculate the calculation function:
 
+---
 ```
 #python
 result = c_int()
@@ -305,10 +325,11 @@ if ret_code != 0:
     print "value_predict error code = %d" % ret_code
 print result, prob
 ```
+---
 
 
-* 传入参数：C结构体
-	
+* Pass parameter: C structure
+---
 ```
 typedef struct {
     int* data_a;
@@ -319,45 +340,49 @@ typedef struct {
     int len_c;
 } ValueData;
 ```
-* 传入参数说明：
+---
+* Pass parameter description:
 
-| 名称  | 类型 |必填| 默认值 | 说明 |
-| --- | --- | --- |---- | --- |
-| handle|  int| 是| 无|模型句柄，由load_model返回|
-| data_value|  ValueData| 是| 无|待检测数据|
+| Name | Type | Must -Fill | Default value | Description |
+| --- | --- | --- | ---- | --- |
+| handle | int | Yes | No | Model handle, return by load_model |
+| Data_value | ValueData | Yes | No | No to detect data |
 
 
 
-* 返回参数：
+* Return to parameters:
+---
 ```
 ret_code
 result
 prob
 ```
+---
 
-* 返回参数说明：
+* Return to parameter description:
 
-| 名称  | 类型  | 说明 |
-|---|---|---|
-| ret_code | int | 返回码。0:成功；非0:失败 |
-| result | c_int | 检测结果是否异常。0:异常；1:正常 |
-| prob | c_float | 概率值，值越小，判定为异常的置信度越高，目前prob<0.15，判决为异常 |
+| Name | Type | Description |
+| --- | --- | --- | |
+| RET_CODE | int | Return code.0: Success; Fei 0: Failure |
+| Result | c_int | The detection results are abnormal.0: Abnormal; 1: Normal |
+| Prob | C_Float | Probability value, the smaller the value, the higher the confidence of the judgment as an abnormality. At present, Prob <0.15, the judgment is abnormal |
 
-##### 2、率值检测
-* 功能说明：根据参考数据检测最近一个数据点是否异常
+##### 2. Rate value detection
+* Function description: Check whether the latest data point is abnormal according to the reference data
 
-* 调用方法： 
+* Calling method:
 
- 加载so库：
- 
+Load the so library:
+---
 ```
 # Python
 so = cdll.LoadLibrary
 metis_lib = so("./libdetect.so")
 ```
+---
 
-  构造传入数据：
-   
+Construction data:
+---
 ```
 # Python
 from ctypes import *
@@ -377,9 +402,11 @@ pbarray = (c_double * len(data_b))(*data_b)
 pcarray = (c_double * len(data_c))(*data_c)
 data_value = RateData(paarray, pbarray, pcarray, len(data_a), len(data_b), len(data_c))
 ```
+---
 
-调用计算函数：
+Calculate the calculation function:
 
+---
 ```
 #python
 result = c_int()
@@ -389,10 +416,11 @@ if ret_code != 0:
     print "value_predict error code = %d" % ret_code
 print result, prob
 ```
+---
 
 
-* 传入参数：C结构体
-	
+* Pass parameter: C structure
+---
 ```
 typedef struct {
     double* data_a;
@@ -403,41 +431,45 @@ typedef struct {
     int len_c;
 } RateData;
 ```
-* 传入参数说明：
+---
+* Pass parameter description:
 
-| 名称  | 类型 |必填| 默认值 | 说明 |
-| --- | --- | --- |---- | --- |
-| data_value|  RateData| 是| 无|待检测数据|
+| Name | Type | Must -Fill | Default value | Description |
+| --- | --- | --- | ---- | --- |
+| Data_value | Ratedata | Yes | No | To detect data |
 
 
 
-* 返回参数：
+* Return to parameters:
+---
 ```
  ret_code
  result
  prob
 ```
+---
 
-* 返回参数说明：
+* Return to parameter description:
 
-| 名称  | 类型  | 说明 |
-|---|---|---|
-| ret_code | int | 返回码。0:成功；非0:失败 |
-| result | c_int | 检测结果是否异常。0:异常；1:正常 |
-| prob | c_float | 概率值，值越小，判定为异常的置信度越高 |
+| Name | Type | Description |
+| --- | --- | --- | |
+| RET_CODE | int | Return code.0: Success; Fei 0: Failure |
+| Result | c_int | The detection results are abnormal.0: Abnormal; 1: Normal |
+| PROB | C_Float | Probability value, the smaller the value, the higher the confidence of the determination of abnormalities |
 
-#### C代码中调用:
+#### c code call:
 
-在C中调用检测函数，需要include头文件detect.h，在编译时链接libdetect.so文件
-##### 1、量值检测
-* 功能说明：根据参考数据检测最近一个数据点是否异常
+Call the detection function in C, you need the INCLUDE header file detect.h to link libdetect.so file when compiling
+##### 1, quantity detection
+* Function description: Check whether the latest data point is abnormal according to the reference data
 
-* 调用方法： 
+* Calling method:
 
-调用load_model加载模型，然后调用value_predict进行预测：
+Call the load_model loading model, and then call Value_predict for prediction:
 
 
- ```
+---
+```
  #include "detect.h"
  
  if (NULL == (handle = load_model("./xgb_default_model")))
@@ -447,10 +479,10 @@ typedef struct {
  }
  int ret = value_predict(handle, &value_data, &sample_result, &prob); 
  printf ("ret=%d result = %d prob = %f\n", ret, sample_result, prob); 
- ```
- 
- * 传入参数：C结构体
-	
+```
+---
+* Pass parameter: C structure
+---
 ```
 typedef struct {
     int* data_a;
@@ -461,35 +493,39 @@ typedef struct {
     int len_c;
 } ValueData;
 ```
-* 传入参数说明：
+---
+* Pass parameter description:
 
-| 名称  | 类型 |必填| 默认值 | 说明 |
-| --- | --- | --- |---- | --- |
-| handle|  int| 是| 无|模型句柄，由load_model返回|
-| value_data|  ValueData| 是| 无|待检测数据|
+| Name | Type | Must -Fill | Default value | Description |
+| --- | --- | --- | ---- | --- |
+| handle | int | Yes | No | Model handle, return by load_model |
+| Value_data | Valuedata | Yes | No | No to detect data |
 
 
 
-* 返回参数：
+* Return to parameters:
+---
 ```
 ret
 sample_result
 prob
 ```
+---
 
-* 返回参数说明：
+* Return to parameter description:
 
-| 名称  | 类型  | 说明 |
-|---|---|---|
-| ret | int | 返回码。0:成功；非0:失败 |
-| sample_result | c_int | 检测结果是否异常。0:异常；1:正常 |
-| prob | c_float | 概率值，值越小，判定为异常的置信度越高，目前prob<0.15，判决为异常 |
+| Name | Type | Description |
+| --- | --- | --- | |
+| RET | int | Return code.0: Success; Fei 0: Failure |
+| sample_result | c_int | The detection results are abnormal.0: Abnormal; 1: Normal |
+| Prob | C_Float | Probability value, the smaller the value, the higher the confidence of the judgment as an abnormality. At present, Prob <0.15, the judgment is abnormal |
 
-##### 2、率值检测
-* 功能说明：根据参考数据检测最近一个数据点是否异常
+##### 2. Rate value detection
+* Function description: Check whether the latest data point is abnormal according to the reference data
 
-* 调用方法： 
+* Calling method:
 
+---
 ```
 #include "detect.h"
 float prob;
@@ -497,10 +533,11 @@ int sample_result;
 int ret = rate_predict(&rate_data, &sample_result, &prob);
 printf ("ret=%d result =%d prob = %f \n", ret, sample_result, prob);
 ```
+---
 
 
-* 传入参数：C结构体
-	
+* Pass parameter: C structure
+---
 ```
 typedef struct {
     double* data_a;
@@ -511,24 +548,27 @@ typedef struct {
     int len_c;
 } RateData;
 ```
-* 传入参数说明：
+---
+* Pass parameter description:
 
-| 名称  | 类型 |必填| 默认值 | 说明 |
-| --- | --- | --- |---- | --- |
-| rate_data|  RateData| 是| 无|待检测数据|
+| Name | Type | Must -Fill | Default value | Description |
+| --- | --- | --- | ---- | --- |
+| Rate_data | Ratedata | Yes | No | To detect data |
 
 
-* 返回参数：
+* Return to parameters:
+---
 ```
 ret
-sample_result
+sampleResult
 prob
 ```
+---
 
-* 返回参数说明：
+* Return to parameter description:
 
-| 名称  | 类型  | 说明 |
-|---|---|---|
-| ret | int | 返回码。0:成功；非0:失败 |
-| result | c_int | 检测结果是否异常。0:异常；1:正常 |
-| prob | c_float | 概率值，值越小，判定为异常的置信度越高 |
+| Name | Type | Description |
+| --- | --- | --- | |
+| RET | int | Return code.0: Success; Fei 0: Failure |
+| Result | c_int | The detection results are abnormal.0: Abnormal; 1: Normal |
+| PROB | C_Float | Probability value, the smaller the value, the higher the confidence of the determination of abnormalities |
